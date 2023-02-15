@@ -65,6 +65,7 @@ from modeling import BertConfig
 from modeling import BertForPreTrainingSegmented
 from modeling import BertForPretraining
 from schedulers import LinearWarmUpScheduler, LinearWarmupPolyDecayScheduler
+from lamb import Lamb
 
 import mlperf_logger
 
@@ -688,7 +689,7 @@ def prepare_model_and_optimizer(args, device):
                 e5m2_allgather=args.dwu_e5m2_allgather)
         optimizer.set_global_scale(float(os.getenv("INIT_LOSS_SCALE", 2**20)))
     else:
-        optimizer = FusedLAMB(optimizer_grouped_parameters,
+        optimizer = Lamb(optimizer_grouped_parameters,
                           lr=args.learning_rate,
                           betas=(args.opt_lamb_beta_1, args.opt_lamb_beta_2))
 
@@ -1019,9 +1020,9 @@ def main():
                             value=int(args.warmup_proportion*args.max_steps) if args.warmup_steps==0 else args.warmup_steps,
                             sync=False)
 
-    if utils.is_main_process():
-        print("parsed args:")
-        print(args)
+    # if utils.is_main_process():
+        # print("parsed args:")
+        # print(args)
     # Prepare optimizer
     model, optimizer, lr_scheduler, checkpoint, global_step = prepare_model_and_optimizer(args, device)
  
@@ -1281,12 +1282,12 @@ def main():
                                     sync=False)
             if utils.is_main_process():
                 print("parsed args:")
-                print(args)
+                # print(args)
 
                 now_time = time.time()
 
                 print("epoch:", epoch)
-
+        
             thread = None
 
             # Reshuffle file list on subsequent epochs
@@ -1326,7 +1327,7 @@ def main():
             stats_stream = torch.cuda.Stream()
             send_lr_in_parallel = False
             lr_cpu = torch.tensor([0.0], dtype=torch.float32, device='cpu').pin_memory()
-            for f_id in range(f_start_id + 1, len(files)):
+            for f_id in range(f_start_id, len(files)):
                 if torch.distributed.get_world_size() > num_files:
                     data_file = files[(f_id*torch.distributed.get_world_size() + torch.distributed.get_rank() +
                                        remainder * f_id) % num_files]
