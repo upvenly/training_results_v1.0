@@ -7,7 +7,7 @@
 ##SBATCH --cpus-per-task=8
 #SBATCH --gres=dcu:4 
 #SBATCH -o ddpx2.out 
-#SBATCH -e ddpx2.out
+#SBATCH -e ddpx2.err
 #SBATCH --exclusive
 
 source ~/.bashrc

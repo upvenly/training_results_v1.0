@@ -6,8 +6,8 @@
 ##SBATCH --ntasks-per-node=4
 ##SBATCH --cpus-per-task=8
 #SBATCH --gres=dcu:4 
-#SBATCH -o ddpx1.out 
-#SBATCH -e ddpx1.err
+#SBATCH -o ddpx4-3.out 
+#SBATCH -e ddpx4-3.err
 #SBATCH --exclusive
 
 source ~/.bashrc
@@ -25,11 +25,8 @@ export TOKENIZERS_PARALLELISM=false
 #export OMP_NUM_THREADS=1
 
 ip=`net lookup $SLURM_JOB_NODELIST`
-echo ${ip}
-echo ${ip} > "ip.txt"
-
-which python3
-python3.7 -m torch.distributed.launch --nproc_per_node 4 --nnodes=2 --node_rank=0 --master_addr=${ip} --master_port=25000  run_pretraining.py  --input_dir=bert_data/2048_shards_uncompressed  --output_dir=./results --seed=42 --do_train --target_mlm_accuracy=0.714  --train_mlm_accuracy_window_size=0 \
+export addr=$(cat ip.txt)
+python -m torch.distributed.launch --nproc_per_node 4 --nnodes=4 --node_rank=3 --master_addr=${addr} --master_port=25000  run_pretraining.py  --input_dir=bert_data/2048_shards_uncompressed  --output_dir=./results --seed=42 --do_train --target_mlm_accuracy=0.714  --train_mlm_accuracy_window_size=0 \
     --bert_config_path=bert_data/bert_config.json \
     --skip_checkpoint \
     --output_dir=./results \
