@@ -1316,7 +1316,7 @@ def main():
             train_sampler = RandomSampler(train_data)
             train_dataloader = DataLoader(train_data, sampler=train_sampler,
                                           batch_size=args.train_batch_size, num_workers=0 if args.train_batch_size<=8 else 4, worker_init_fn=worker_init, pin_memory=True)
-
+            print("!!!!args.train_batch_size",args.train_batch_size)
             overflow_buf = None
             if args.allreduce_post_accumulation:
                 overflow_buf = torch.cuda.IntTensor([0])
