@@ -18,7 +18,7 @@ python -m torch.distributed.launch --nproc_per_node=4 \
     --allreduce_post_accumulation --allreduce_post_accumulation_fp16 \
     --gradient_accumulation_steps=1 \
     --log_freq=1 \
-    --train_batch_size=4 \
+    --train_batch_size=6 \
     --learning_rate=4e-5 \
     --warmup_proportion=1.0 \
     --input_dir=bert_data/2048_shards_uncompressed \
