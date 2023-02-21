@@ -47,7 +47,7 @@ from model.layers.layernorm import BertLayerNorm
 
 import mhalib
 from mha import *
-from fmha import FMHA
+#from fmha import FMHA
 
 logger = logging.getLogger(__name__)
 

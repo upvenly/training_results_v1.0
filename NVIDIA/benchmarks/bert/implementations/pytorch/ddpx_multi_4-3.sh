@@ -6,10 +6,9 @@
 ##SBATCH --ntasks-per-node=4
 ##SBATCH --cpus-per-task=8
 #SBATCH --gres=dcu:4 
-#SBATCH -o ddpx4-3.out 
-#SBATCH -e ddpx4-3.err
+#SBATCH -o log/%j-ddpx4-3.out 
+#SBATCH -e log/%j-ddpx4-3.err
 #SBATCH --exclusive
-echo "ddpx4-3.out"
 source ~/.bashrc
 
 #export MIOPEN_DEBUG_DISABLE_FIND_DB=1
@@ -34,7 +33,7 @@ python -m torch.distributed.launch --nproc_per_node 4 --nnodes=4 --node_rank=3 -
     --allreduce_post_accumulation --allreduce_post_accumulation_fp16 \
     --gradient_accumulation_steps=1 \
     --log_freq=1 \
-    --train_batch_size=6 \
+    --train_batch_size=4 \
     --learning_rate=4e-5 \
     --warmup_proportion=1.0 \
     --input_dir=bert_data/2048_shards_uncompressed \

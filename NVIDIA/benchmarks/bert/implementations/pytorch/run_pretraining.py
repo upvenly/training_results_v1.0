@@ -997,9 +997,12 @@ def main():
     mlperf_logger.log_start(key=mlperf_logger.constants.INIT_START,
                             log_all_ranks=True, sync=False)
 
-    if args.use_env and 'LOCAL_RANK' in os.environ:
-        args.local_rank = int(os.environ['LOCAL_RANK'])
-
+    if args.use_env:
+        if 'OMPI_COMM_WORLD_LOCAL_RANK' in os.environ:
+            args.local_rank = int(os.environ['OMPI_COMM_WORLD_LOCAL_RANK'])
+        elif 'local_rank' in os.environ:
+            args.local_rank = int(os.environ['local_rank'])
+    
     device, args = setup_training(args)
 
     mlperf_logger.mlperf_submission_log('bert')
@@ -1025,7 +1028,7 @@ def main():
         # print(args)
     # Prepare optimizer
     model, optimizer, lr_scheduler, checkpoint, global_step = prepare_model_and_optimizer(args, device)
- 
+    
     worker_seeds, shuffling_seeds = utils.setup_seeds(args.seed, args.num_epochs_to_generate_seeds_for, device)
     worker_seed = worker_seeds[torch.distributed.get_rank()]
 
