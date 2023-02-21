@@ -2,4 +2,3 @@ NVIDIA/benchmarks/bert/implementations/pytorch/__pycache__/*
 NVIDIA/benchmarks/bert/implementations/pytorch/log/*
 NVIDIA/benchmarks/bert/implementations/pytorch/model/__pycache__/*
 NVIDIA/benchmarks/bert/implementations/pytorch/model/layers/__pycache__/*
-NVIDIA/benchmarks/bert/implementations/pytorch/.gitignore
