@@ -1,12 +1,20 @@
 #!/bin/bash
+# NODES=2 RANK=0 NPROC_PER_NODE=8 MASTER_ADDR=192.168.5.2 MASTER_PORT=23456 sh run_test.sh
 
-python -m torch.distributed.launch --nproc_per_node=8 \
+data_path=/data/bert_data
+
+python -m torch.distributed.launch \
+     --nnodes="${NODES}" \
+     --node_rank="${RANK}" \
+     --nproc_per_node="${NPROC_PER_NODE}" \
+     --master_addr="${MASTER_ADDR}" \
+     --master_port="${MASTER_PORT}" \
     run_pretraining.py \
     --target_mlm_accuracy=0.714 \
     --train_mlm_accuracy_window_size=0 \
     --seed=42 \
     --do_train \
-    --bert_config_path=bert_data/bert_config.json \
+    --bert_config_path=$data_path/bert_config.json \
     --skip_checkpoint \
     --output_dir=/results \
     --fp16 \
@@ -16,13 +24,13 @@ python -m torch.distributed.launch --nproc_per_node=8 \
     --train_batch_size=4 \
     --learning_rate=4e-5 \
     --warmup_proportion=1.0 \
-    --input_dir=bert_data/2048_shards_uncompressed \
+    --input_dir=$data_path/2048_shards_uncompressed \
     --phase2 \
     --max_seq_length=512 \
     --max_predictions_per_seq=76 \
-    --max_steps=10 \
+    --max_steps=1500 \
     --eval_iter_samples=2 \
-    --init_checkpoint=bert_data/model.ckpt-28252.pt \
+    --init_checkpoint=$data_path/model.ckpt-28252.pt \
     --use_ddp \
 
 
